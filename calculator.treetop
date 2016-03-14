@@ -1,0 +1,126 @@
+grammar Calculator
+
+  rule expression
+    spacing additive spacing {
+      
+      def eval(env={})
+        additive.eval(env)
+      end
+
+    }
+  end
+
+  rule additive
+    head:multitive tail:(
+      spacing operator:op_additive spacing operand:multitive )* {
+      
+      def eval(env={})
+        tail.elements.inject(head.eval(env)) { |value, element|
+          element.operator.apply(value, element.operand.eval(env))
+        }
+      end
+
+    }
+  end
+
+  rule multitive
+    head:power tail:(
+      spacing operator:op_multitive spacing operand:power)* {
+      
+      def eval(env={})
+        tail.elements.inject(head.eval(env)) { |value, element|
+          element.operator.apply(value, element.operand.eval(env))
+        }
+      end
+
+    }
+  end
+
+  rule power
+    head:primary tail:(
+      spacing operator:op_power spacing operand:primary)* {
+      
+      def eval(env={})
+        tail.elements.inject(head.eval(env)) { |value, element|
+          element.operator.apply(value, element.operand.eval(env))
+        }
+      end
+
+    }
+  end
+
+  rule primary
+    "(" spacing expression spacing ")" {
+      def eval(env={})
+        expression.eval(env)
+      end
+    }
+    /
+    
+    number
+  end
+
+  rule op_power
+    "**" {
+      def apply(a, b)
+        a ** b
+      end
+    }
+  end
+
+  rule op_multitive
+    "*" {
+      def apply(a, b)
+        a * b
+      end
+    }
+    /
+    
+    "/" {
+      def apply(a, b)
+        a / b
+      end
+    }
+    /
+    
+    "%" {
+      def apply(a, b)
+        a % b
+      end
+    }
+  end
+
+  rule op_additive
+    "+" {
+      def apply(a, b)
+        a + b
+      end
+    }
+    /
+    "-" {
+      def apply(a, b)
+        a - b
+      end
+    }
+  end
+
+  rule number
+    "-"? digit+ {
+      def eval(env={})
+        text_value.to_i
+      end
+    }
+  end
+
+  rule digit
+    [0-9]
+  end
+
+  rule spacing
+    space*
+  end
+
+  rule space
+    " " / "\t" / "\r" / "\n"
+  end
+end
