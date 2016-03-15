@@ -7,7 +7,8 @@ It can evaluate very simple arithmetical text.
 ```
 $ git clone (This repository)
 $ cd Calculator
-$ ruby main.rb
+$ bundle install
+$ bundle exec ruby main.rb
 ```
 
 ### Functions
