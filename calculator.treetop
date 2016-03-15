@@ -11,42 +11,15 @@ grammar Calculator
   end
 
   rule additive
-    head:multitive tail:(
-      spacing operator:op_additive spacing operand:multitive )* {
-      
-      def eval(env={})
-        tail.elements.inject(head.eval(env)) { |value, element|
-          element.operator.apply(value, element.operand.eval(env))
-        }
-      end
-
-    }
+    head:multitive tail:(spacing operator:op_additive spacing operand:multitive)* <BinaryOperation> 
   end
 
   rule multitive
-    head:power tail:(
-      spacing operator:op_multitive spacing operand:power)* {
-      
-      def eval(env={})
-        tail.elements.inject(head.eval(env)) { |value, element|
-          element.operator.apply(value, element.operand.eval(env))
-        }
-      end
-
-    }
+    head:power tail:(spacing operator:op_multitive spacing operand:power)* <BinaryOperation>
   end
 
   rule power
-    head:primary tail:(
-      spacing operator:op_power spacing operand:primary)* {
-      
-      def eval(env={})
-        tail.elements.inject(head.eval(env)) { |value, element|
-          element.operator.apply(value, element.operand.eval(env))
-        }
-      end
-
-    }
+    head:primary tail:(spacing operator:op_power spacing operand:primary)* <BinaryOperation>
   end
 
   rule primary

@@ -1,4 +1,5 @@
 require 'treetop'
+require './calculator_node_classes'
 
 Treetop.load 'calculator'
 
